@@ -1,0 +1,42 @@
+# uv / Python environments
+.venv/
+.uv-cache/
+
+# uv-managed project files to keep in git:
+!uv.lock
+!.python-version
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test, coverage, type-checker, and linter caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.hypothesis/
+
+# Packaging and build outputs
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+
+# Local env files
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# OS/editor files
+.DS_Store
+feed.xml
+
+# Local agent context
+ContextPool

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drudgefeed"
+version = "0.1.0"
+description = "Generate an RSS feed from drudgereport.com"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+drudgefeed = "drudgefeed.cli:main"
+drudgefeed-server = "drudgefeed.server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["drudgefeed*"]

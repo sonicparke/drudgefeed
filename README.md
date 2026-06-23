@@ -26,6 +26,23 @@ Then subscribe your RSS reader to:
 http://127.0.0.1:8080/feed.xml
 ```
 
+## Deploy
+
+This repository includes a GitHub Pages workflow that publishes a static RSS
+feed every 10 minutes. Enable GitHub Pages for the repository and set the Pages
+source to GitHub Actions, then run the "Publish feed" workflow once from the
+Actions tab.
+
+The workflow:
+
+- runs on `main` pushes, manual dispatch, and a `3/10 * * * *` schedule
+- runs the unit tests before publishing
+- writes the generated RSS to `feed.xml`
+- deploys only after a successful fetch and feed generation
+
+If a scheduled fetch fails, the workflow fails before deployment, so the
+previous successful `feed.xml` remains live.
+
 ## Options
 
 ```bash

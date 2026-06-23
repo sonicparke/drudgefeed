@@ -1,0 +1,95 @@
+name: Publish feed
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-feed.yml"
+      - ".python-version"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/**"
+      - "tests/**"
+  schedule:
+    - cron: "3/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build feed
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: .python-version
+          cache: pip
+
+      - name: Install package
+        run: python -m pip install .
+
+      - name: Run tests
+        run: python -m unittest discover -s tests
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Generate RSS feed
+        run: |
+          mkdir -p public
+          python -m drudgefeed \
+            --output public/feed.xml \
+            --feed-url "${{ steps.pages.outputs.base_url }}/feed.xml"
+
+      - name: Add index page
+        run: |
+          cat > public/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>Drudge Feed</title>
+            </head>
+            <body>
+              <main>
+                <h1>Drudge Feed</h1>
+                <p>The RSS feed is available at <a href="./feed.xml">feed.xml</a>.</p>
+              </main>
+            </body>
+          </html>
+          HTML
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+  deploy:
+    name: Deploy feed
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

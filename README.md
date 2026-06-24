@@ -8,6 +8,12 @@ based on each story URL.
 
 ## Use
 
+Self-host or point here:
+
+```text
+https://sonicparke.github.io/drudgefeed/feed.xml
+```
+
 Generate a feed once:
 
 ```bash
